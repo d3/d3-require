@@ -12,7 +12,7 @@ By default, `require` loads modules from [unpkg](https://unpkg.com/); the module
 
 ## Installing
 
-If you use NPM, `npm install d3-require`. Otherwise, download the [latest release](https://github.com/d3/d3-require/releases/latest). You can also load directly from [unpkg.com](https://unpkg.com/d3-require/). AMD, CommonJS, and vanilla environments are supported. In vanilla, a `require` global is exported:
+If you use NPM, `npm install d3-require`. Otherwise, download the [latest release](https://github.com/d3/d3-require/releases/latest). You can also load directly from [unpkg.com](https://unpkg.com/d3-require/). AMD, CommonJS, and vanilla environments are supported. In vanilla, `require` and `define` globals are exported:
 
 ```html
 <script src="https://unpkg.com/d3-require@0"></script>
