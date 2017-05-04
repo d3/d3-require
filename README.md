@@ -1,0 +1,46 @@
+# d3-require
+
+A minimal, promise-based implementation to require asynchronous module definitions. This implementation supports a strict subset of AMD and is designed to work with any browser-compatible library that implements one of the [recommended UMD patterns](https://github.com/umdjs/umd). The additional constraints are:
+
+* The `define` method must be called synchronously by the library on load.
+
+* Only anonymous module definitions; no named modules.
+
+* Only the built-in `exports` dependency is allowed; no `require` or `module` as in CommonJS.
+
+By default, loads modules from [unpkg](https://unpkg.com/). You can change this behavior using [*require*.resolve](#require_resolve).
+
+## Installing
+
+If you use NPM, `npm install d3-require`. Otherwise, download the [latest release](https://github.com/d3/d3-require/releases/latest). You can also load directly from [unpkg.com](https://unpkg.com/d3-require/). AMD, CommonJS, and vanilla environments are supported. In vanilla, a `require` global is exported:
+
+```html
+<script src="https://unpkg.com/d3-require@0"></script>
+<script>
+
+require("d3-array").then(d3 => {
+  console.log(d3.range(100));
+});
+
+</script>
+```
+
+## API Reference
+
+<a href="#require" name="require">#</a> <b>require</b>(<i>name</i>)
+
+```js
+require("d3-array").then(d3 => {
+  console.log(d3.range(100));
+});
+```
+
+<a href="#require_resolve" name="require_resolve">#</a> <i>require</i>.<b>resolve</b>(<i>resolver</i>)
+
+```js
+var requireUnpkg = require.resolve(name => `https://unpkg.com/${name}`);
+
+requireUnpkg("d3-array").then(d3 => {
+  console.log(d3.range(100));
+});
+```

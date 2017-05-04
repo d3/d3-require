@@ -1,0 +1,28 @@
+{
+  "name": "d3-require",
+  "version": "0.0.0",
+  "description": "A minimal, promise-based implementation to require asynchronous module definitions.",
+  "author": {
+    "name": "Data-Driven Documents, Inc."
+  },
+  "license": "ISC",
+  "main": "build/d3-require.js",
+  "module": "src/index",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/d3/d3-require.git"
+  },
+  "scripts": {
+    "pretest": "rm -rf build && mkdir build && rollup --banner \"$(preamble)\" -f umd -n require -o build/d3-require.js -- src/index.js",
+    "test": "tape 'test/**/*-test.js' && eslint index.js src",
+    "prepublish": "npm run test && uglifyjs --preamble \"$(preamble)\" build/d3-require.js -c -m -o build/d3-require.min.js",
+    "postpublish": "git push && git push --tags && zip -j build/d3-require.zip -- LICENSE README.md build/d3-require.js build/d3-require.min.js"
+  },
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "package-preamble": "0.1.0",
+    "rollup": "^0.41.6",
+    "tape": "^4.6.3",
+    "uglify-js": "^2.8.22"
+  }
+}
