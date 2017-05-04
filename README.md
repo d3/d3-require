@@ -47,7 +47,7 @@ require("d3-array@1").then(d3 => {
 
 <a href="#require_resolve" name="require_resolve">#</a> <i>require</i>.<b>resolve</b>(<i>resolver</i>)
 
-Requires a new [require function](#require) using the specified *resolver*, which is a function that takes a module name and returns the corresponding URL. For example, the default implementationd works something like this:
+Returns a new [require function](#require) using the specified *resolver*, which is a function that takes a module name and returns the corresponding URL. For example, the default implementationd works something like this:
 
 ```js
 var requireUnpkg = require.resolve(name => `https://unpkg.com/${name}`);
