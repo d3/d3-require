@@ -27,7 +27,7 @@ require("d3-array").then(d3 => {
 
 ## API Reference
 
-<a href="#require" name="require">#</a> <b>require</b>(<i>name</i>)
+<a href="#require" name="require">#</a> <b>require</b>(<i>name</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js#L6 "Source")
 
 To load a module:
 
@@ -45,7 +45,7 @@ require("d3-array@1").then(d3 => {
 });
 ```
 
-<a href="#require_resolve" name="require_resolve">#</a> <i>require</i>.<b>resolve</b>(<i>resolver</i>)
+<a href="#require_resolve" name="require_resolve">#</a> <i>require</i>.<b>resolve</b>(<i>resolver</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js#L22 "Source")
 
 Returns a new [require function](#require) using the specified *resolver*, which is a function that takes a module name and returns the corresponding URL. For example, the default implementationd works something like this:
 
