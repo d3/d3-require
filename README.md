@@ -8,7 +8,7 @@ A minimal, promise-based implementation to require [asynchronous module definiti
 
 * Only the built-in `exports` dependency is allowed; no `require` or `module` as in CommonJS.
 
-By default, `require` loads modules from [unpkg](https://unpkg.com/); the module *name* can be any package (or scoped package) name optionally followed by the at sign (@) and a semver range. For example, `require("d3@4")` loads the highest version of [D3](https://d3js.org) 4.x. You can change this behavior using [*require*.resolve](#require_resolve).
+By default, [require](#require) loads modules from [unpkg](https://unpkg.com/); the module *name* can be any package (or scoped package) name optionally followed by the at sign (@) and a semver range. For example, `require("d3@4")` loads the highest version of [D3](https://d3js.org) 4.x. You can change this behavior using [*require*.resolve](#require_resolve).
 
 ## Installing
 
