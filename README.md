@@ -27,7 +27,7 @@ require("d3-array").then(d3 => {
 
 ## API Reference
 
-<a href="#require" name="require">#</a> <b>require</b>(<i>name</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js#L6 "Source")
+<a href="#require" name="require">#</a> <b>require</b>(<i>names…</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js#L6 "Source")
 
 To load a module:
 
@@ -37,7 +37,15 @@ require("d3-array").then(d3 => {
 });
 ```
 
-Or, with a version range:
+To load two modules and merge them into a single object:
+
+```js
+require("d3-array", "d3-color").then(d3 => {
+  console.log(d3.range(360).map(h => d3.hsl(h, 1, 0.5)));
+});
+```
+
+To load a module within a version range:
 
 ```js
 require("d3-array@1").then(d3 => {

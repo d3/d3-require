@@ -1,7 +1,11 @@
-var queue = [];
+var queue = [], map = queue.map;
 
 export default (function requireResolve(resolver) {
   var modules = new Map;
+
+  function requireAll(name) {
+    return arguments.length > 1 ? Promise.all(map.call(arguments, require)).then(merge) : require(name);
+  }
 
   function require(name) {
     var url = resolver(name + ""), module = modules.get(url);
@@ -19,13 +23,17 @@ export default (function requireResolve(resolver) {
     return module;
   }
 
-  require.resolve = requireResolve;
+  requireAll.resolve = requireResolve;
 
-  return require;
+  return requireAll;
 })(function resolver(name) {
   if (!name.length || /^[\s._]/.test(name) || /\s$/.test(name)) throw new Error("illegal name");
   return "https://unpkg.com/" + name;
 });
+
+function merge(modules) {
+  return Object.assign.apply(null, [{}].concat(modules));
+}
 
 self.define = function define(dependencies, factory) {
   queue.push(arguments.length < 2 ? function() {
