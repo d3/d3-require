@@ -1,6 +1,6 @@
 var queue = [], map = queue.map;
 
-export default (function requireResolve(resolver) {
+export default (function requireFrom(source) {
   var modules = new Map;
 
   function requireAll(name) {
@@ -8,7 +8,7 @@ export default (function requireResolve(resolver) {
   }
 
   function require(name) {
-    var url = resolver(name + ""), module = modules.get(url);
+    var url = source(name + ""), module = modules.get(url);
     if (!module) modules.set(url, module = new Promise(function(resolve, reject) {
       var script = document.createElement("script");
       script.onload = function() {
@@ -23,10 +23,10 @@ export default (function requireResolve(resolver) {
     return module;
   }
 
-  requireAll.resolve = requireResolve;
+  requireAll.from = requireFrom;
 
   return requireAll;
-})(function resolver(name) {
+})(function source(name) {
   if (!name.length || /^[\s._]/.test(name) || /\s$/.test(name)) throw new Error("illegal name");
   return "https://unpkg.com/" + name;
 });

@@ -8,7 +8,7 @@ A minimal, promise-based implementation to require [asynchronous module definiti
 
 * Only the built-in `exports` dependency is allowed; no `require` or `module` as in CommonJS.
 
-By default, [require](#require) loads modules from [unpkg](https://unpkg.com/); the module *name* can be any package (or scoped package) name optionally followed by the at sign (@) and a semver range. For example, `require("d3@4")` loads the highest version of [D3](https://d3js.org) 4.x. You can change this behavior using [*require*.resolve](#require_resolve).
+By default, [require](#require) loads modules from [unpkg](https://unpkg.com/); the module *name* can be any package (or scoped package) name optionally followed by the at sign (@) and a semver range. For example, `require("d3@4")` loads the highest version of [D3](https://d3js.org) 4.x. You can change this behavior using [*require*.from](#require_from).
 
 ## Installing
 
@@ -53,12 +53,12 @@ require("d3-array@1").then(d3 => {
 });
 ```
 
-<a href="#require_resolve" name="require_resolve">#</a> <i>require</i>.<b>resolve</b>(<i>resolver</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js#L22 "Source")
+<a href="#require_from" name="require_from">#</a> <i>require</i>.<b>from</b>(<i>source</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js#L22 "Source")
 
-Returns a new [require function](#require) using the specified *resolver*, which is a function that takes a module name and returns the corresponding URL. For example, the default implementationd works something like this:
+Returns a new [require function](#require) which loads modules from the specified *source*, which is a function that takes a module name and returns the corresponding URL. For example, the default implementation works something like this:
 
 ```js
-var requireUnpkg = require.resolve(name => `https://unpkg.com/${name}`);
+var requireUnpkg = require.from(name => `https://unpkg.com/${name}`);
 
 requireUnpkg("d3-array").then(d3 => {
   console.log(d3.range(100));
