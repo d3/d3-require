@@ -1,6 +1,6 @@
 # d3-require
 
-A minimal, promise-based implementation to require [asynchronous module definitions](https://github.com/amdjs/amdjs-api/blob/master/AMD.md) (AMD). This implementation is [about 40 lines of code](https://github.com/d3/d3-require/blob/master/index.js) and supports a strict subset of AMD. It is designed to work with browser-targeting libraries that implement one of the [recommended UMD patterns](https://github.com/umdjs/umd). The constraints of this implementation are:
+A minimal, promise-based implementation to require [asynchronous module definitions](https://github.com/amdjs/amdjs-api/blob/master/AMD.md) (AMD). This implementation is [about 50 lines of code](https://github.com/d3/d3-require/blob/master/index.js) and supports a strict subset of AMD. It is designed to work with browser-targeting libraries that implement one of the [recommended UMD patterns](https://github.com/umdjs/umd). The constraints of this implementation are:
 
 * The `define` method must be called synchronously by the library on load.
 
