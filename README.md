@@ -8,17 +8,17 @@ A minimal, promise-based implementation to require [asynchronous module definiti
 
 * Only the built-in `exports` dependency is allowed; no `require` or `module` as in CommonJS.
 
-By default, [require](#require) loads modules from [unpkg](https://unpkg.com/); the module *name* can be any package (or scoped package) name optionally followed by the at sign (@) and a semver range. For example, `require("d3@4")` loads the highest version of [D3](https://d3js.org) 4.x. You can change this behavior using [*require*.from](#require_from).
+By default, [require](#require) loads modules from [unpkg](https://unpkg.com/); the module *name* can be any package (or scoped package) name optionally followed by the at sign (@) and a semver range. For example, `d3.require("d3@4")` loads the highest version of [D3](https://d3js.org) 4.x. You can change this behavior using [*require*.from](#require_from).
 
 ## Installing
 
-If you use NPM, `npm install d3-require`. Otherwise, download the [latest release](https://github.com/d3/d3-require/releases/latest). You can also load directly from [unpkg.com](https://unpkg.com/d3-require/). AMD, CommonJS, and vanilla environments are supported. In vanilla, `require` and `define` globals are exported:
+If you use NPM, `npm install d3-require`. Otherwise, download the [latest release](https://github.com/d3/d3-require/releases/latest). You can also load directly from [unpkg.com](https://unpkg.com/d3-require/). AMD, CommonJS, and vanilla environments are supported. In vanilla, `d3` and `define` globals are exported:
 
 ```html
 <script src="https://unpkg.com/d3-require@0"></script>
 <script>
 
-require("d3-array").then(d3 => {
+d3.require("d3-array").then(d3 => {
   console.log(d3.range(100));
 });
 
@@ -27,12 +27,12 @@ require("d3-array").then(d3 => {
 
 ## API Reference
 
-<a href="#require" name="require">#</a> <b>require</b>(<i>names…</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js#L6 "Source")
+<a href="#require" name="require">#</a> d3.<b>require</b>(<i>names…</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js#L6 "Source")
 
 To load a module:
 
 ```js
-require("d3-array").then(d3 => {
+d3.require("d3-array").then(d3 => {
   console.log(d3.range(100));
 });
 ```
@@ -40,7 +40,7 @@ require("d3-array").then(d3 => {
 To load two modules and merge them into a single object:
 
 ```js
-require("d3-array", "d3-color").then(d3 => {
+d3.require("d3-array", "d3-color").then(d3 => {
   console.log(d3.range(360).map(h => d3.hsl(h, 1, 0.5)));
 });
 ```
@@ -48,17 +48,17 @@ require("d3-array", "d3-color").then(d3 => {
 To load a module within a version range:
 
 ```js
-require("d3-array@1").then(d3 => {
+d3.require("d3-array@1").then(d3 => {
   console.log(d3.range(100));
 });
 ```
 
-<a href="#require_from" name="require_from">#</a> <i>require</i>.<b>from</b>(<i>source</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js#L22 "Source")
+<a href="#requireFrom" name="requireFrom">#</a> d3.<b>requireFrom</b>(<i>source</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js#L22 "Source")
 
 Returns a new [require function](#require) which loads modules from the specified *source*, which is a function that takes a module name and returns the corresponding URL. For example, the default implementation works something like this:
 
 ```js
-var requireUnpkg = require.from(name => `https://unpkg.com/${name}`);
+var requireUnpkg = d3.requireFrom(name => `https://unpkg.com/${name}`);
 
 requireUnpkg("d3-array").then(d3 => {
   console.log(d3.range(100));
