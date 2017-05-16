@@ -38,17 +38,18 @@ function isexports(name) {
 }
 
 self.define = function define(dependencies, factory) {
-  queue.push(arguments.length < 2 || !some.call(dependencies, isexports) ? function() {
-    return typeof factory === "function" ? new Promise(function(resolve) {
-      return resolve(factory());
-    }) : factory;
-  } : function(require) {
+  if (arguments.length < 2) factory = dependencies, dependencies = [];
+  queue.push(some.call(dependencies, isexports) ? function(require) {
     var exports = {};
-    return Promise.all(dependencies.map(function(name) {
+    return Promise.all(map.call(dependencies, function(name) {
       return isexports(name += "") ? exports : require(name);
     })).then(function(dependencies) {
       factory.apply(null, dependencies);
       return exports;
+    });
+  } : function(require) {
+    return Promise.all(map.call(dependencies, require)).then(function(dependencies) {
+      return typeof factory === "function" ? factory.apply(null, dependencies) : factory;
     });
   });
 };
