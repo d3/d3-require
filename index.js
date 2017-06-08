@@ -16,7 +16,9 @@ export function requireFrom(source) {
         if (queue.length !== 1) return reject(new Error("invalid module"));
         resolve(queue.pop()(require));
       };
-      script.onerror = reject;
+      script.onerror = function() {
+        reject(new Error("unable to load module"));
+      };
       script.async = true;
       script.src = url;
       document.head.appendChild(script);
