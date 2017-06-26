@@ -37,6 +37,14 @@ d3.require("d3-array").then(d3 => {
 });
 ```
 
+To load a module within a version range:
+
+```js
+d3.require("d3-array@1").then(d3 => {
+  console.log(d3.range(100));
+});
+```
+
 To load two modules and merge them into a single object:
 
 ```js
@@ -45,13 +53,9 @@ d3.require("d3-array", "d3-color").then(d3 => {
 });
 ```
 
-To load a module within a version range:
+Note: if more than one *name* is specified, the promise will yield a new object with each of the loaded module’s own enumerable property values copied into the new object. If multiple modules define the same property name, the value from the latest module that defines the property is used; it is recommended that you only combine modules that avoid naming conflicts.
 
-```js
-d3.require("d3-array@1").then(d3 => {
-  console.log(d3.range(100));
-});
-```
+If a module’s property value is null or undefined on load, such as [d3.event](https://github.com/d3/d3-selection/blob/master/README.md#event), the value will be exposed via [getter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get) rather than copied; this is to simulate ES module-style [live bindings](http://2ality.com/2015/07/es6-module-exports.html). However, property values that are neither null nor undefined on load are copied by value assignment, and thus **are not live bindings**!
 
 <a href="#requireFrom" name="requireFrom">#</a> d3.<b>requireFrom</b>(<i>source</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js#L22 "Source")
 

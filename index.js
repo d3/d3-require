@@ -1,4 +1,4 @@
-var queue = [], map = queue.map, some = queue.some;
+var queue = [], map = queue.map, some = queue.some, hasOwnProperty = queue.hasOwnProperty;
 
 export var require = requireFrom(function(name) {
   if (!name.length || /^[\s._]/.test(name) || /\s$/.test(name)) throw new Error("illegal name");
@@ -32,7 +32,20 @@ export function requireFrom(source) {
 }
 
 function merge(modules) {
-  return Object.assign.apply(null, [{}].concat(modules));
+  var o = {}, i = -1, n = modules.length, m, k;
+  while (++i < n) {
+    for (k in (m = modules[i])) {
+      if (hasOwnProperty.call(m, k)) {
+        if (m[k] == null) Object.defineProperty(o, k, {get: getter(m, k)});
+        else o[k] = m[k];
+      }
+    }
+  }
+  return o;
+}
+
+function getter(object, name) {
+  return function() { return object[name]; };
 }
 
 function isexports(name) {
