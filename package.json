@@ -15,14 +15,14 @@
   "scripts": {
     "pretest": "rm -rf build && mkdir build && rollup --banner \"$(preamble)\" -f umd -n d3 -o build/d3-require.js -- index.js",
     "test": "tape 'test/**/*-test.js' && eslint index.js",
-    "prepublish": "npm run test && uglifyjs --preamble \"$(preamble)\" build/d3-require.js -c -m -o build/d3-require.min.js",
+    "prepublish": "npm run test && uglifyjs -b beautify=false,preamble=\"'$(preamble)'\" build/d3-require.js -c -m -o build/d3-require.min.js",
     "postpublish": "git push && git push --tags && zip -j build/d3-require.zip -- LICENSE README.md build/d3-require.js build/d3-require.min.js"
   },
   "devDependencies": {
-    "eslint": "^3.19.0",
+    "eslint": "^4.1.1",
     "package-preamble": "0.1.0",
-    "rollup": "^0.42.0",
+    "rollup": "^0.43.0",
     "tape": "^4.6.3",
-    "uglify-js": "^3.0.15"
+    "uglify-js": "^3.0.20"
   }
 }
