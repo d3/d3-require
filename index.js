@@ -52,7 +52,8 @@ function isexports(name) {
   return (name + "") === "exports";
 }
 
-self.define = function define(dependencies, factory) {
+self.define = function define(name, dependencies, factory) {
+  if (arguments.length < 3) factory = dependencies, dependencies = name;
   if (arguments.length < 2) factory = dependencies, dependencies = [];
   queue.push(some.call(dependencies, isexports) ? function(require) {
     var exports = {};
