@@ -21,6 +21,7 @@ export function requireFrom(source) {
       };
       script.async = true;
       script.src = url;
+      window.define = define;
       document.head.appendChild(script);
     }));
     return module;
@@ -52,7 +53,7 @@ function isexports(name) {
   return (name + "") === "exports";
 }
 
-self.define = function define(name, dependencies, factory) {
+function define(name, dependencies, factory) {
   if (arguments.length < 3) factory = dependencies, dependencies = name;
   if (arguments.length < 2) factory = dependencies, dependencies = [];
   queue.push(some.call(dependencies, isexports) ? function(require) {
@@ -68,6 +69,6 @@ self.define = function define(name, dependencies, factory) {
       return typeof factory === "function" ? factory.apply(null, dependencies) : factory;
     });
   });
-};
+}
 
-self.define.amd = {};
+define.amd = {};
