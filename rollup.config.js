@@ -1,6 +1,8 @@
 export default {
-  entry: "index",
+  input: "index",
   extend: true,
-  format: "umd",
-  moduleName: "d3"
+  output: {
+    format: "umd",
+    name: "d3"
+  }
 };
