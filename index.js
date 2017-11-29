@@ -8,7 +8,7 @@ export var require = requireFrom(function source(name, base) {
 });
 
 export function requireFrom(source) {
-  var modules = new Map, require = requireRelative(location.href);
+  var modules = new Map, require = requireRelative(typeof location === "undefined" ? "" : location.href);
 
   function requireRelative(base) {
     return function(name) {
