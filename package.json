@@ -15,7 +15,7 @@
   "scripts": {
     "pretest": "rm -rf build && mkdir build && rollup -c --banner \"$(preamble)\" -o build/d3-require.js",
     "test": "tape 'test/**/*-test.js' && eslint index.js",
-    "prepublish": "npm run test && uglifyjs -b beautify=false,preamble=\"'$(preamble)'\" build/d3-require.js -c -m -o build/d3-require.min.js",
+    "prepublishOnly": "npm run test && uglifyjs -b beautify=false,preamble=\"'$(preamble)'\" build/d3-require.js -c -m -o build/d3-require.min.js",
     "postpublish": "git push && git push --tags && zip -j build/d3-require.zip -- LICENSE README.md build/d3-require.js build/d3-require.min.js"
   },
   "devDependencies": {
