@@ -71,6 +71,6 @@ requireUnpkg("d3-array").then(d3 => {
 
 The *resolver* implementation used by [d3.require](#require) is [d3.resolve](#resolve).
 
-<a href="#resolve" name="resolve">#</a> d3.<b>resolve</b>(<i>name</i>, <i>base</i>)
+<a href="#resolve" name="resolve">#</a> d3.<b>resolve</b>(<i>name</i>[, <i>base</i>])
 
-Returns the URL to load the module with the specified *name*. The *name* may also be specified as a relative path, in which case it is resolved relative to the specified *base* URL.
+Returns the URL to load the module with the specified *name*. The *name* may also be specified as a relative path, in which case it is resolved relative to the specified *base* URL. If *base* is not specified, it defaults to the global [location](https://developer.mozilla.org/en-US/docs/Web/API/Window/location).
