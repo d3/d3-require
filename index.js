@@ -1,18 +1,20 @@
 var queue = [], map = queue.map, some = queue.some, hasOwnProperty = queue.hasOwnProperty;
 
-export var require = requireFrom(function source(name, base) {
+export function resolve(name, base) {
   if (/^(\w+:)?\/\//i.test(name)) return name;
   if (/^[.]{0,2}\//i.test(name)) return new URL(name, base).href;
   if (!name.length || /^[\s._]/.test(name) || /\s$/.test(name)) throw new Error("illegal name");
   return "https://unpkg.com/" + name;
-});
+}
 
-export function requireFrom(source) {
+export var require = requireFrom(resolve);
+
+export function requireFrom(resolver) {
   var modules = new Map, require = requireRelative(typeof location === "undefined" ? "" : location.href);
 
   function requireRelative(base) {
     return function(name) {
-      var url = source(name + "", base), module = modules.get(url);
+      var url = resolver(name + "", base), module = modules.get(url);
       if (!module) modules.set(url, module = new Promise(function(resolve, reject) {
         var script = document.createElement("script");
         script.onload = function() {
