@@ -1,6 +1,6 @@
 {
   "name": "d3-require",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "A minimal, promise-based implementation to require asynchronous module definitions.",
   "author": {
     "name": "Data-Driven Documents, Inc."
