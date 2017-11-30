@@ -18,9 +18,11 @@ export function requireFrom(source) {
         script.onload = function() {
           try { resolve(queue.pop()(requireRelative(url.replace(/\/[^/]*$/, "/")))); }
           catch (error) { reject(new Error("invalid module")); }
+          script.remove();
         };
         script.onerror = function() {
           reject(new Error("unable to load module"));
+          script.remove();
         };
         script.async = true;
         script.src = url;
