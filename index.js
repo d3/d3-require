@@ -22,7 +22,7 @@ export function requireFrom(resolver) {
       if (!module) modules.set(url, module = new Promise(function(resolve, reject) {
         var script = document.createElement("script");
         script.onload = function() {
-          try { resolve(queue.pop()(requireRelative(url.replace(/\/[^/]*$/, "/")))); }
+          try { resolve(queue.pop()(requireRelative(url))); }
           catch (error) { reject(new Error("invalid module")); }
           script.remove();
         };
