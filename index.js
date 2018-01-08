@@ -1,4 +1,8 @@
-var queue = [], map = queue.map, some = queue.some, hasOwnProperty = queue.hasOwnProperty;
+var modules = new Map,
+    queue = [],
+    map = queue.map,
+    some = queue.some,
+    hasOwnProperty = queue.hasOwnProperty;
 
 export function resolve(name, base) {
   if (/^(\w+:)?\/\//i.test(name)) return name;
@@ -10,7 +14,7 @@ export function resolve(name, base) {
 export var require = requireFrom(resolve);
 
 export function requireFrom(resolver) {
-  var modules = new Map, require = requireRelative(null);
+  var require = requireRelative(null);
 
   function requireRelative(base) {
     return function(name) {
