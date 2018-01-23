@@ -3,7 +3,7 @@
   "version": "0.6.2",
   "description": "A minimal, promise-based implementation to require asynchronous module definitions.",
   "author": {
-    "name": "Data-Driven Documents, Inc."
+    "name": "Observable, Inc."
   },
   "license": "ISC",
   "main": "build/d3-require.js",
