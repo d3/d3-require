@@ -66,8 +66,9 @@ function isexports(name) {
 }
 
 function define(name, dependencies, factory) {
-  if (arguments.length < 3) factory = dependencies, dependencies = name;
-  if (arguments.length < 2) factory = dependencies, dependencies = [];
+  var n = arguments.length;
+  if (n < 2) factory = name, dependencies = [];
+  else if (n < 3) factory = dependencies, dependencies = typeof name === "string" ? [] : name;
   queue.push(some.call(dependencies, isexports) ? function(require) {
     var exports = {};
     return Promise.all(map.call(dependencies, function(name) {
