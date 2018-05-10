@@ -4,11 +4,23 @@ var modules = new Map,
     some = queue.some,
     hasOwnProperty = queue.hasOwnProperty;
 
-export function resolve(name, base) {
+export async function resolve(name, base) {
   if (/^(\w+:)|\/\//i.test(name)) return name;
   if (/^[.]{0,2}\//i.test(name)) return new URL(name, base == null ? location : base).href;
   if (!name.length || /^[\s._]/.test(name) || /\s$/.test(name)) throw new Error("illegal name");
-  return "https://unpkg.com/" + name;
+  if (base === null) { // TODO support base
+    let i = name.indexOf("/");
+    if (i >= 0) name = name.substring(0, i); // TODO allow scoped packages @foo/bar/path
+    return fetch(`https://unpkg.com/${name}/package.json`)
+      .then(response => {
+        if (!response.ok) throw new Error("unable to load package.json");
+        return response.json();
+      })
+      .then(json => {
+        return `https://unpkg.com/${json.name}@${json.version}/${json.unpkg || json.main}`; // TODO
+      });
+  }
+  return `https://unpkg.com/${name}`;
 }
 
 export var require = requireFrom(resolve);
@@ -16,26 +28,30 @@ export var require = requireFrom(resolve);
 export function requireFrom(resolver) {
   var require = requireRelative(null);
 
+  function requireAbsolute(url) {
+    var module = modules.get(url);
+    if (!module) modules.set(url, module = new Promise(function(resolve, reject) {
+      var script = document.createElement("script");
+      script.onload = function() {
+        try { resolve(queue.pop()(requireRelative(url))); }
+        catch (error) { reject(new Error("invalid module")); }
+        script.remove();
+      };
+      script.onerror = function() {
+        reject(new Error("unable to load module"));
+        script.remove();
+      };
+      script.async = true;
+      script.src = url;
+      window.define = define;
+      document.head.appendChild(script);
+    }));
+    return module;
+  }
+
   function requireRelative(base) {
     return function(name) {
-      var url = resolver(name + "", base), module = modules.get(url);
-      if (!module) modules.set(url, module = new Promise(function(resolve, reject) {
-        var script = document.createElement("script");
-        script.onload = function() {
-          try { resolve(queue.pop()(requireRelative(url))); }
-          catch (error) { reject(new Error("invalid module")); }
-          script.remove();
-        };
-        script.onerror = function() {
-          reject(new Error("unable to load module"));
-          script.remove();
-        };
-        script.async = true;
-        script.src = url;
-        window.define = define;
-        document.head.appendChild(script);
-      }));
-      return module;
+      return Promise.resolve(resolver(name, base)).then(requireAbsolute);
     };
   }
 
