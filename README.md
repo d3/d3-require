@@ -8,14 +8,14 @@ A minimal, promise-based implementation to require [asynchronous module definiti
 
 * Named module definitions (*e.g.*, jQuery) are treated as anonymous modules.
 
-By default, [d3.require](#require) loads modules from [unpkg](https://unpkg.com/); the module *name* can be any package (or scoped package) name optionally followed by the at sign (@) and a semver range. For example, `d3.require("d3@4")` loads the highest version of [D3](https://d3js.org) 4.x. Relative paths and absolute URLs are also supported. You can change this behavior using [d3.requireFrom](#requireFrom).
+By default, [d3.require](#require) loads modules from [unpkg](https://unpkg.com/); the module *name* can be any package (or scoped package) name optionally followed by the at sign (@) and a semver range. For example, `d3.require("d3@5")` loads the highest version of [D3](https://d3js.org) 5.x. Relative paths and absolute URLs are also supported. You can change this behavior using [d3.requireFrom](#requireFrom).
 
 ## Installing
 
 If you use NPM, `npm install d3-require`. Otherwise, download the [latest release](https://github.com/d3/d3-require/releases/latest). You can also load directly from [unpkg.com](https://unpkg.com/d3-require/). AMD, CommonJS, and vanilla environments are supported. In vanilla, `d3` and `define` globals are exported:
 
 ```html
-<script src="https://unpkg.com/d3-require@0"></script>
+<script src="https://unpkg.com/d3-require@1"></script>
 <script>
 
 d3.require("d3-array").then(d3 => {
@@ -62,15 +62,17 @@ If a module’s property value is null or undefined on load, such as [d3.event](
 Returns a new [require function](#require) which loads modules from the specified *resolver*, which is a function that takes a module name and returns the corresponding URL. For example:
 
 ```js
-var requireUnpkg = d3.requireFrom(name => `https://unpkg.com/${name}`);
+const myRequire = d3.requireFrom(async name => {
+  return `https://unpkg.com/${name}`;
+});
 
-requireUnpkg("d3-array").then(d3 => {
+myRequire("d3-array").then(d3 => {
   console.log(d3.range(100));
 });
 ```
 
-The *resolver* implementation used by [d3.require](#require) is [d3.resolve](#resolve).
+The returned *require* function exposes the passed in *resolver* as [*require*.resolve](#require_resolve).
 
-<a href="#resolve" name="resolve">#</a> d3.<b>resolve</b>(<i>name</i>[, <i>base</i>]) [<>](https://github.com/d3/d3-require/blob/master/index.js "Source")
+<a href="#require_resolve" name="require_resolve">#</a> <i>require</i>.<b>resolve</b>(<i>name</i>[, <i>base</i>]) [<>](https://github.com/d3/d3-require/blob/master/index.js "Source")
 
-Returns the URL to load the module with the specified *name*. The *name* may also be specified as a relative path, in which case it is resolved relative to the specified *base* URL. If *base* is not specified, it defaults to the global [location](https://developer.mozilla.org/en-US/docs/Web/API/Window/location).
+Returns a promise to the URL to load the module with the specified *name*. The *name* may also be specified as a relative path, in which case it is resolved relative to the specified *base* URL. If *base* is not specified, it defaults to the global [location](https://developer.mozilla.org/en-US/docs/Web/API/Window/location).

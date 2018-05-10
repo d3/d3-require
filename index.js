@@ -31,7 +31,7 @@ function resolveTarget(target) {
   });
 }
 
-export async function resolve(name, base) {
+async function resolve(name, base) {
   if (name.startsWith(origin)) name = name.substring(origin.length);
   if (/^(\w+:)|\/\//i.test(name)) return name;
   if (/^[.]{0,2}\//i.test(name)) return new URL(name, base == null ? location : base).href;
@@ -81,11 +81,15 @@ export function requireFrom(resolver) {
     return name => Promise.resolve(resolver(name, base)).then(requireAbsolute);
   }
 
-  return function require(name) {
+  function require(name) {
     return arguments.length > 1
         ? Promise.all(map.call(arguments, requireBase)).then(merge)
         : requireBase(name);
-  };
+  }
+
+  require.resolve = resolver;
+
+  return require;
 }
 
 function merge(modules) {
