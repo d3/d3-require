@@ -1,43 +1,71 @@
-var modules = new Map,
-    queue = [],
-    map = queue.map,
-    some = queue.some,
-    hasOwnProperty = queue.hasOwnProperty;
+const metas = new Map;
+const modules = new Map;
+const queue = [];
+const map = queue.map;
+const some = queue.some;
+const hasOwnProperty = queue.hasOwnProperty;
+const parser = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
+
+function parseIdentifier(identifier) {
+  const match = parser.exec(identifier);
+  return match && {
+    name: match[1],
+    version: match[2],
+    path: match[3]
+  };
+}
+
+function resolveMeta(name) {
+  let meta = metas.get(name);
+  if (!meta) metas.set(name, meta = fetch(`https://unpkg.com/${name}/package.json`).then(response => {
+    if (!response.ok) throw new Error("unable to load package.json");
+    return response.json();
+  }));
+  return meta;
+}
+
+function resolveTarget(target) {
+  return resolveMeta(`${target.name}@${target.version}`).then(meta => {
+    return `https://unpkg.com/${meta.name}@${meta.version}/${target.path || meta.unpkg || meta.main}`;
+  });
+}
 
 export async function resolve(name, base) {
   if (/^(\w+:)|\/\//i.test(name)) return name;
   if (/^[.]{0,2}\//i.test(name)) return new URL(name, base == null ? location : base).href;
   if (!name.length || /^[\s._]/.test(name) || /\s$/.test(name)) throw new Error("illegal name");
-  if (base === null) { // TODO support base
-    let i = name.indexOf("/");
-    if (i >= 0) name = name.substring(0, i); // TODO allow scoped packages @foo/bar/path
-    return fetch(`https://unpkg.com/${name}/package.json`)
-      .then(response => {
-        if (!response.ok) throw new Error("unable to load package.json");
-        return response.json();
-      })
-      .then(json => {
-        return `https://unpkg.com/${json.name}@${json.version}/${json.unpkg || json.main}`; // TODO
+  const target = parseIdentifier(name);
+  if (target == null) return `https://unpkg.com/${name}`;
+  if (target.version == null) {
+    if (/^https:\/\/unpkg\.com\//.test(base)) {
+      const parent = parseIdentifier(base.substring(18));
+      return resolveMeta(`${parent.name}@${parent.version || "latest"}`).then(meta => {
+        target.version = meta.dependencies && meta.dependencies[target.name]
+            || meta.peerDependencies && meta.peerDependencies[target.name]
+            || "latest";
+        return resolveTarget(target);
       });
+    }
+    target.version = "latest";
   }
-  return `https://unpkg.com/${name}`;
+  return resolveTarget(target);
 }
 
-export var require = requireFrom(resolve);
+export const require = requireFrom(resolve);
 
 export function requireFrom(resolver) {
-  var require = requireRelative(null);
+  const requireBase = requireRelative(null);
 
   function requireAbsolute(url) {
-    var module = modules.get(url);
-    if (!module) modules.set(url, module = new Promise(function(resolve, reject) {
-      var script = document.createElement("script");
-      script.onload = function() {
+    let module = modules.get(url);
+    if (!module) modules.set(url, module = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.onload = () => {
         try { resolve(queue.pop()(requireRelative(url))); }
         catch (error) { reject(new Error("invalid module")); }
         script.remove();
       };
-      script.onerror = function() {
+      script.onerror = () => {
         reject(new Error("unable to load module"));
         script.remove();
       };
@@ -50,20 +78,20 @@ export function requireFrom(resolver) {
   }
 
   function requireRelative(base) {
-    return function(name) {
-      return Promise.resolve(resolver(name, base)).then(requireAbsolute);
-    };
+    return name => Promise.resolve(resolver(name, base)).then(requireAbsolute);
   }
 
-  return function(name) {
-    return arguments.length > 1 ? Promise.all(map.call(arguments, require)).then(merge) : require(name);
+  return function require(name) {
+    return arguments.length > 1
+        ? Promise.all(map.call(arguments, requireBase)).then(merge)
+        : requireBase(name);
   };
 }
 
 function merge(modules) {
-  var o = {}, i = -1, n = modules.length, m, k;
-  while (++i < n) {
-    for (k in (m = modules[i])) {
+  const o = {};
+  for (const m of modules) {
+    for (const k in m) {
       if (hasOwnProperty.call(m, k)) {
         if (m[k] == null) Object.defineProperty(o, k, {get: getter(m, k)});
         else o[k] = m[k];
@@ -74,7 +102,7 @@ function merge(modules) {
 }
 
 function getter(object, name) {
-  return function() { return object[name]; };
+  return () => object[name];
 }
 
 function isexports(name) {
@@ -82,19 +110,19 @@ function isexports(name) {
 }
 
 function define(name, dependencies, factory) {
-  var n = arguments.length;
+  const n = arguments.length;
   if (n < 2) factory = name, dependencies = [];
   else if (n < 3) factory = dependencies, dependencies = typeof name === "string" ? [] : name;
-  queue.push(some.call(dependencies, isexports) ? function(require) {
-    var exports = {};
-    return Promise.all(map.call(dependencies, function(name) {
+  queue.push(some.call(dependencies, isexports) ? require => {
+    const exports = {};
+    return Promise.all(map.call(dependencies, name => {
       return isexports(name += "") ? exports : require(name);
-    })).then(function(dependencies) {
+    })).then(dependencies => {
       factory.apply(null, dependencies);
       return exports;
     });
-  } : function(require) {
-    return Promise.all(map.call(dependencies, require)).then(function(dependencies) {
+  } : require => {
+    return Promise.all(map.call(dependencies, require)).then(dependencies => {
       return typeof factory === "function" ? factory.apply(null, dependencies) : factory;
     });
   });
