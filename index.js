@@ -4,7 +4,7 @@ const queue = [];
 const map = queue.map;
 const some = queue.some;
 const hasOwnProperty = queue.hasOwnProperty;
-const unpkgRe = /^https:\/\/unpkg\.com\//;
+const origin = "https://unpkg.com/";
 const parseRe = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
 
 function parseIdentifier(identifier) {
@@ -18,7 +18,7 @@ function parseIdentifier(identifier) {
 
 function resolveMeta(name) {
   let meta = metas.get(name);
-  if (!meta) metas.set(name, meta = fetch(`https://unpkg.com/${name}/package.json`).then(response => {
+  if (!meta) metas.set(name, meta = fetch(`${origin}${name}/package.json`).then(response => {
     if (!response.ok) throw new Error("unable to load package.json");
     return response.json();
   }));
@@ -27,20 +27,20 @@ function resolveMeta(name) {
 
 function resolveTarget(target) {
   return resolveMeta(`${target.name}@${target.version || "latest"}`).then(meta => {
-    return `https://unpkg.com/${meta.name}@${meta.version}/${target.path || meta.unpkg || meta.main}`;
+    return `${origin}${meta.name}@${meta.version}/${target.path || meta.unpkg || meta.main}`;
   });
 }
 
 export async function resolve(name, base) {
-  if (unpkgRe.test(name)) name = name.substring(18);
+  if (name.startsWith(origin)) name = name.substring(origin.length);
   if (/^(\w+:)|\/\//i.test(name)) return name;
   if (/^[.]{0,2}\//i.test(name)) return new URL(name, base == null ? location : base).href;
   if (!name.length || /^[\s._]/.test(name) || /\s$/.test(name)) throw new Error("illegal name");
   const target = parseIdentifier(name);
-  if (!target) return `https://unpkg.com/${name}`;
+  if (!target) return `${origin}${name}`;
   if (!target.version) {
-    if (unpkgRe.test(base)) {
-      const source = parseIdentifier(base.substring(18));
+    if (base && base.startsWith(origin)) {
+      const source = parseIdentifier(base.substring(origin.length));
       return resolveMeta(`${source.name}@${source.version || "latest"}`).then(meta => {
         target.version = meta.dependencies && meta.dependencies[target.name]
             || meta.peerDependencies && meta.peerDependencies[target.name];
