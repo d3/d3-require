@@ -27,7 +27,7 @@ function resolveMeta(name) {
 
 function resolveTarget(target) {
   return resolveMeta(`${target.name}@${target.version || "latest"}`).then(meta => {
-    return `${origin}${meta.name}@${meta.version}/${target.path || meta.unpkg || meta.main}`;
+    return `${origin}${meta.name}@${meta.version}/${target.path || meta.unpkg || meta.main || "index.js"}`;
   });
 }
 
