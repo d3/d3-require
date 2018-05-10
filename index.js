@@ -26,7 +26,7 @@ function resolveMeta(name) {
 }
 
 function resolveTarget(target) {
-  return resolveMeta(`${target.name}@${target.version}`).then(meta => {
+  return resolveMeta(`${target.name}@${target.version || "latest"}`).then(meta => {
     return `https://unpkg.com/${meta.name}@${meta.version}/${target.path || meta.unpkg || meta.main}`;
   });
 }
@@ -43,12 +43,10 @@ export async function resolve(name, base) {
       const source = parseIdentifier(base.substring(18));
       return resolveMeta(`${source.name}@${source.version || "latest"}`).then(meta => {
         target.version = meta.dependencies && meta.dependencies[target.name]
-            || meta.peerDependencies && meta.peerDependencies[target.name]
-            || "latest";
+            || meta.peerDependencies && meta.peerDependencies[target.name];
         return resolveTarget(target);
       });
     }
-    target.version = "latest";
   }
   return resolveTarget(target);
 }
