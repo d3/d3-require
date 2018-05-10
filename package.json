@@ -6,23 +6,22 @@
     "name": "Observable, Inc."
   },
   "license": "ISC",
-  "main": "build/d3-require.js",
+  "main": "dist/d3-require.js",
   "module": "index",
   "repository": {
     "type": "git",
     "url": "https://github.com/d3/d3-require.git"
   },
   "scripts": {
-    "pretest": "rm -rf build && mkdir build && rollup -c --banner \"$(preamble)\" -o build/d3-require.js",
+    "pretest": "rm -rf dist && mkdir dist && rollup -c",
     "test": "tape 'test/**/*-test.js' && eslint index.js",
-    "prepublishOnly": "npm run test && uglifyjs -b beautify=false,preamble=\"'$(preamble)'\" build/d3-require.js -c -m -o build/d3-require.min.js",
-    "postpublish": "git push && git push --tags && zip -j build/d3-require.zip -- LICENSE README.md build/d3-require.js build/d3-require.min.js"
+    "prepublishOnly": "npm run test",
+    "postpublish": "git push && git push --tags && zip -j dist/d3-require.zip -- LICENSE README.md dist/d3-require.js dist/d3-require.min.js"
   },
   "devDependencies": {
-    "eslint": "^4.2.0",
-    "package-preamble": "0.1.0",
-    "rollup": "^0.50.0",
-    "tape": "^4.7.0",
-    "uglify-js": "^3.0.24"
+    "eslint": "^4.19.1",
+    "rollup": "^0.58.2",
+    "rollup-plugin-uglify": "^3.0.0",
+    "tape": "^4.9.0"
   }
 }
