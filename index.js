@@ -39,7 +39,7 @@ export async function resolve(name, base) {
   const target = parseIdentifier(name);
   if (!target) return `${origin}${name}`;
   if (!target.version) {
-    if (base && base.startsWith(origin)) {
+    if (base != null && base.startsWith(origin)) {
       const source = parseIdentifier(base.substring(origin.length));
       return resolveMeta(`${source.name}@${source.version || "latest"}`).then(meta => {
         target.version = meta.dependencies && meta.dependencies[target.name]
