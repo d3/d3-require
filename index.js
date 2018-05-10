@@ -4,10 +4,11 @@ const queue = [];
 const map = queue.map;
 const some = queue.some;
 const hasOwnProperty = queue.hasOwnProperty;
-const parser = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
+const unpkgRe = /^https:\/\/unpkg\.com\//;
+const parseRe = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
 
 function parseIdentifier(identifier) {
-  const match = parser.exec(identifier);
+  const match = parseRe.exec(identifier);
   return match && {
     name: match[1],
     version: match[2],
@@ -31,15 +32,16 @@ function resolveTarget(target) {
 }
 
 export async function resolve(name, base) {
+  if (unpkgRe.test(name)) name = name.substring(18);
   if (/^(\w+:)|\/\//i.test(name)) return name;
   if (/^[.]{0,2}\//i.test(name)) return new URL(name, base == null ? location : base).href;
   if (!name.length || /^[\s._]/.test(name) || /\s$/.test(name)) throw new Error("illegal name");
   const target = parseIdentifier(name);
-  if (target == null) return `https://unpkg.com/${name}`;
-  if (target.version == null) {
-    if (/^https:\/\/unpkg\.com\//.test(base)) {
-      const parent = parseIdentifier(base.substring(18));
-      return resolveMeta(`${parent.name}@${parent.version || "latest"}`).then(meta => {
+  if (!target) return `https://unpkg.com/${name}`;
+  if (!target.version) {
+    if (unpkgRe.test(base)) {
+      const source = parseIdentifier(base.substring(18));
+      return resolveMeta(`${source.name}@${source.version || "latest"}`).then(meta => {
         target.version = meta.dependencies && meta.dependencies[target.name]
             || meta.peerDependencies && meta.peerDependencies[target.name]
             || "latest";
