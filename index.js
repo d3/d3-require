@@ -7,6 +7,10 @@ const hasOwnProperty = queue.hasOwnProperty;
 const origin = "https://unpkg.com/";
 const parseRe = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
 
+function string(value) {
+  return typeof value === "string" ? value : "";
+}
+
 function parseIdentifier(identifier) {
   const match = parseRe.exec(identifier);
   return match && {
@@ -27,7 +31,7 @@ function resolveMeta(name) {
 
 function resolveTarget(target) {
   return resolveMeta(`${target.name}@${target.version || "latest"}`).then(meta => {
-    return `${origin}${meta.name}@${meta.version}/${target.path || meta.unpkg || meta.main || "index.js"}`;
+    return `${origin}${meta.name}@${meta.version}/${target.path || string(meta.unpkg) || string(meta.browser) || string(meta.main) || "index.js"}`;
   });
 }
 
