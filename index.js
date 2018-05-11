@@ -20,19 +20,15 @@ function parseIdentifier(identifier) {
   };
 }
 
-function resolveMeta(name) {
-  let meta = metas.get(name);
-  if (!meta) metas.set(name, meta = fetch(`${origin}${name}/package.json`).then(response => {
+function resolveMeta(target) {
+  const url = `${origin}${target.name}@${target.version || "latest"}/package.json`;
+  let meta = metas.get(url);
+  if (!meta) metas.set(url, meta = fetch(url).then(response => {
     if (!response.ok) throw new Error("unable to load package.json");
+    if (response.redirected && !metas.has(response.url)) metas.set(response.url, meta);
     return response.json();
   }));
   return meta;
-}
-
-function resolveTarget(target) {
-  return resolveMeta(`${target.name}@${target.version || "latest"}`).then(meta => {
-    return `${origin}${meta.name}@${meta.version}/${target.path || string(meta.unpkg) || string(meta.browser) || string(meta.main) || "index.js"}`;
-  });
 }
 
 async function resolve(name, base) {
@@ -42,17 +38,12 @@ async function resolve(name, base) {
   if (!name.length || /^[\s._]/.test(name) || /\s$/.test(name)) throw new Error("illegal name");
   const target = parseIdentifier(name);
   if (!target) return `${origin}${name}`;
-  if (!target.version) {
-    if (base != null && base.startsWith(origin)) {
-      const source = parseIdentifier(base.substring(origin.length));
-      return resolveMeta(`${source.name}@${source.version || "latest"}`).then(meta => {
-        target.version = meta.dependencies && meta.dependencies[target.name]
-            || meta.peerDependencies && meta.peerDependencies[target.name];
-        return resolveTarget(target);
-      });
-    }
+  if (!target.version && base != null && base.startsWith(origin)) {
+    const meta = await resolveMeta(parseIdentifier(base.substring(origin.length)));
+    target.version = meta.dependencies && meta.dependencies[target.name] || meta.peerDependencies && meta.peerDependencies[target.name];
   }
-  return resolveTarget(target);
+  const meta = await resolveMeta(target);
+  return `${origin}${meta.name}@${meta.version}/${target.path || string(meta.unpkg) || string(meta.browser) || string(meta.main) || "index.js"}`;
 }
 
 export const require = requireFrom(resolve);
