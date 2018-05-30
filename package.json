@@ -1,6 +1,6 @@
 {
   "name": "d3-require",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A minimal, promise-based implementation to require asynchronous module definitions.",
   "author": {
     "name": "Observable, Inc."
