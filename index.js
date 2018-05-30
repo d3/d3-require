@@ -21,7 +21,7 @@ function parseIdentifier(identifier) {
 }
 
 function resolveMeta(target) {
-  const url = `${origin}${target.name}@${target.version || "latest"}/package.json`;
+  const url = `${origin}${target.name}${target.version ? `@${target.version}` : ""}/package.json`;
   let meta = metas.get(url);
   if (!meta) metas.set(url, meta = fetch(url).then(response => {
     if (!response.ok) throw new Error("unable to load package.json");
