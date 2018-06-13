@@ -78,7 +78,7 @@ export function requireFrom(resolver) {
   }
 
   function requireAlias(aliases) {
-    return requireFrom(function(name, base) {
+    return requireFrom((name, base) => {
       if (name in aliases) {
         name = aliases[name], base = null;
         if (typeof name !== "string") return name;
