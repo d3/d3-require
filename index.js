@@ -80,9 +80,8 @@ export function requireFrom(resolver) {
   function requireAlias(aliases) {
     return requireFrom(function(name, base) {
       if (name in aliases) {
-        var alias = aliases[name];
-        if (typeof alias !== "string") return alias;
-        name = alias, base = null;
+        name = aliases[name], base = null;
+        if (typeof name !== "string") return name;
       }
       return resolver(name, base);
     });
