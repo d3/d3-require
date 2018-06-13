@@ -76,12 +76,19 @@ export function requireFrom(resolver) {
     return name => Promise.resolve(resolver(name, base)).then(requireAbsolute);
   }
 
+  function requireAlias(map) {
+    return requireFrom(function(name, base) {
+      return resolver(name in map ? map[name] : name, base);
+    });
+  }
+
   function require(name) {
     return arguments.length > 1
         ? Promise.all(map.call(arguments, requireBase)).then(merge)
         : requireBase(name);
   }
 
+  require.alias = requireAlias;
   require.resolve = resolver;
 
   return require;
