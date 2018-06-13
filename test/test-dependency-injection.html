@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<script src="https://unpkg.com/glamor@2.20.40/umd/index.js"></script>
+<script src="https://unpkg.com/react@16.4.0/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@16.4.0/umd/react-dom.production.min.js"></script>
+<script src="/dist/d3-require.js"></script>
+<script>
+
+d3.require.injectDependency('react', React);
+d3.require.injectDependency('glamor', Glamor);
+d3.require("/test/test-dependency-injection-module.js").then(Test => {
+  ReactDOM.render(
+    React.createElement(
+      "div",
+      Glamor.css({
+        color: 'black'
+      }),
+      "Hello from the",
+      React.createElement(Test)
+    ), 
+    document.body
+  )
+  // two css rules in the global styleSheet, one from here, one form the module
+  const rules = Glamor.styleSheet.rules()
+  console.log(rules.length > 1, rules)
+});
+
+</script>

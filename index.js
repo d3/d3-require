@@ -82,7 +82,14 @@ export function requireFrom(resolver) {
         : requireBase(name);
   }
 
+  function injectDependency(name, module) {
+    Promise.resolve(resolver(name, null)).then(function (url) {
+      modules.set(url, module);
+    });
+  }
+
   require.resolve = resolver;
+  require.injectDependency = injectDependency;
 
   return require;
 }
