@@ -76,3 +76,7 @@ The returned *require* function exposes the passed in *resolver* as [*require*.r
 <a href="#require_resolve" name="require_resolve">#</a> <i>require</i>.<b>resolve</b>(<i>name</i>[, <i>base</i>]) [<>](https://github.com/d3/d3-require/blob/master/index.js "Source")
 
 Returns a promise to the URL to load the module with the specified *name*. The *name* may also be specified as a relative path, in which case it is resolved relative to the specified *base* URL. If *base* is not specified, it defaults to the global [location](https://developer.mozilla.org/en-US/docs/Web/API/Window/location).
+
+<a href="#require_injectDependency" name="require_injectDependency">#</a> <i>require</i>.<b>injectDependency</b>(<i>name</i>, <i>module</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js "Source")
+
+Resolves the name and injects *module* into the global cache. Create a new require function with a custom *resolver* to avoid fetching meta data.
