@@ -52,6 +52,7 @@ export function requireFrom(resolver) {
   const requireBase = requireRelative(null);
 
   function requireAbsolute(url) {
+    if (typeof url !== "string") return url;
     let module = modules.get(url);
     if (!module) modules.set(url, module = new Promise((resolve, reject) => {
       const script = document.createElement("script");
@@ -78,7 +79,12 @@ export function requireFrom(resolver) {
 
   function requireAlias(map) {
     return requireFrom(function(name, base) {
-      return resolver(name in map ? map[name] : name, base);
+      if (name in map) {
+        var value = map[name];
+        if (typeof value !== "string") return value;
+        name = value, base = null;
+      }
+      return resolver(name, base);
     });
   }
 
