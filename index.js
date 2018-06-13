@@ -77,12 +77,12 @@ export function requireFrom(resolver) {
     return name => Promise.resolve(resolver(name, base)).then(requireAbsolute);
   }
 
-  function requireAlias(map) {
+  function requireAlias(aliases) {
     return requireFrom(function(name, base) {
-      if (name in map) {
-        var value = map[name];
-        if (typeof value !== "string") return value;
-        name = value, base = null;
+      if (name in aliases) {
+        var alias = aliases[name];
+        if (typeof alias !== "string") return alias;
+        name = alias, base = null;
       }
       return resolver(name, base);
     });
