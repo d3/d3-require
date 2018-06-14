@@ -82,10 +82,12 @@ Returns a promise to the URL to load the module with the specified *name*. The *
 Returns a [require function](#require) with the specified *aliases*. For each key in the specified *aliases* object, any require of that key is substituted with the corresponding value. The values can be strings representing the name or URL of the module to load, or a literal non-string value for direct substitution. For example, if `React` and `ReactDOM` are already in-scope, you can say:
 
 ```js
-d3.require.alias({
+const myRequire = d3.require.alias({
   "react": React,
   "react-dom": ReactDOM
-})("semiotic").then(Semiotic => {
+});
+
+myRequire("semiotic").then(Semiotic => {
   console.log(Semiotic);
 });
 ```
