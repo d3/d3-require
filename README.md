@@ -76,3 +76,16 @@ The returned *require* function exposes the passed in *resolver* as [*require*.r
 <a href="#require_resolve" name="require_resolve">#</a> <i>require</i>.<b>resolve</b>(<i>name</i>[, <i>base</i>]) [<>](https://github.com/d3/d3-require/blob/master/index.js "Source")
 
 Returns a promise to the URL to load the module with the specified *name*. The *name* may also be specified as a relative path, in which case it is resolved relative to the specified *base* URL. If *base* is not specified, it defaults to the global [location](https://developer.mozilla.org/en-US/docs/Web/API/Window/location).
+
+<a href="#require_alias" name="require_alias">#</a> <i>require</i>.<b>alias</b>(<i>aliases</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js "Source")
+
+Returns a [require function](#require) with the specified *aliases*. For each key in the specified *aliases* object, any require of that key is substituted with the corresponding value. The values can be strings representing the name or URL of the module to load, or a literal non-string value for direct substitution. For example, if `React` and `ReactDOM` are already in-scope, you can say:
+
+```js
+d3.require.alias({
+  "react": React,
+  "react-dom": ReactDOM
+})("semiotic").then(Semiotic => {
+  console.log(Semiotic);
+});
+```
