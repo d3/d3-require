@@ -1,5 +1,4 @@
 const metas = new Map;
-const modules = new Map;
 const queue = [];
 const map = queue.map;
 const some = queue.some;
@@ -49,12 +48,13 @@ async function resolve(name, base) {
 export const require = requireFrom(resolve);
 
 export function requireFrom(resolver) {
+  const cache = new Map;
   const requireBase = requireRelative(null);
 
   function requireAbsolute(url) {
     if (typeof url !== "string") return url;
-    let module = modules.get(url);
-    if (!module) modules.set(url, module = new Promise((resolve, reject) => {
+    let module = cache.get(url);
+    if (!module) cache.set(url, module = new Promise((resolve, reject) => {
       const script = document.createElement("script");
       script.onload = () => {
         try { resolve(queue.pop()(requireRelative(url))); }
