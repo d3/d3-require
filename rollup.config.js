@@ -1,33 +1,36 @@
-import uglify from "rollup-plugin-uglify";
-import meta from "./package.json";
+import {terser} from "rollup-plugin-terser";
+import * as meta from "./package.json";
 
-const copyright = `// ${meta.name} Version ${meta.version} Copyright ${new Date().getFullYear()} Observable, Inc.`;
+const config = {
+  input: "src/index.js",
+  external: Object.keys(meta.dependencies || {}).filter(key => /^d3-/.test(key)),
+  output: {
+    file: `dist/${meta.name}.js`,
+    name: "d3",
+    format: "umd",
+    indent: false,
+    extend: true,
+    banner: `// ${meta.name} v${meta.version} Copyright ${(new Date).getFullYear()} ${meta.author.name}`,
+    globals: Object.assign({}, ...Object.keys(meta.dependencies || {}).filter(key => /^d3-/.test(key)).map(key => ({[key]: "d3"})))
+  },
+  plugins: []
+};
 
 export default [
+  config,
   {
-    input: "index",
+    ...config,
     output: {
-      extend: true,
-      file: "dist/d3-require.js",
-      banner: copyright,
-      format: "umd",
-      name: "d3"
-    }
-  },
-  {
-    input: "index",
+      ...config.output,
+      file: `dist/${meta.name}.min.js`
+    },
     plugins: [
-      uglify({
+      ...config.plugins,
+      terser({
         output: {
-          preamble: copyright
+          preamble: config.output.banner
         }
       })
-    ],
-    output: {
-      extend: true,
-      file: "dist/d3-require.min.js",
-      format: "umd",
-      name: "d3"
-    }
+    ]
   }
 ];

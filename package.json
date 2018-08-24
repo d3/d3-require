@@ -7,21 +7,22 @@
   },
   "license": "ISC",
   "main": "dist/d3-require.js",
-  "module": "index",
+  "unpkg": "dist/d3-require.min.js",
+  "module": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/d3/d3-require.git"
   },
   "scripts": {
-    "pretest": "rm -rf dist && mkdir dist && rollup -c",
-    "test": "tape 'test/**/*-test.js' && eslint index.js",
-    "prepublishOnly": "npm run test",
-    "postpublish": "git push && git push --tags && zip -j dist/d3-require.zip -- LICENSE README.md dist/d3-require.js dist/d3-require.min.js"
+    "pretest": "rollup -c",
+    "test": "tape 'test/**/*-test.js' && eslint src",
+    "prepublishOnly": "rm -rf dist && yarn test",
+    "postpublish": "git push && git push --tags && zip -j dist/${npm_package_name}.zip -- LICENSE README.md dist/${npm_package_name}.js dist/${npm_package_name}.min.js"
   },
   "devDependencies": {
-    "eslint": "^4.19.1",
-    "rollup": "^0.58.2",
-    "rollup-plugin-uglify": "^3.0.0",
-    "tape": "^4.9.0"
+    "eslint": "5",
+    "rollup": "0.64",
+    "rollup-plugin-terser": "1",
+    "tape": "4"
   }
 }
