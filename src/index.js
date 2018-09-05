@@ -4,14 +4,15 @@ const map = queue.map;
 const some = queue.some;
 const hasOwnProperty = queue.hasOwnProperty;
 const origin = "https://unpkg.com/";
-const parseRe = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
+const identifierRe = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
+const versionRe = /^\d+\.\d+\.\d+(-[\w-.+]+)?$/g;
 
 function string(value) {
   return typeof value === "string" ? value : "";
 }
 
 function parseIdentifier(identifier) {
-  const match = parseRe.exec(identifier);
+  const match = identifierRe.exec(identifier);
   return match && {
     name: match[1],
     version: match[2],
@@ -41,6 +42,7 @@ async function resolve(name, base) {
     const meta = await resolveMeta(parseIdentifier(base.substring(origin.length)));
     target.version = meta.dependencies && meta.dependencies[target.name] || meta.peerDependencies && meta.peerDependencies[target.name];
   }
+  if (target.path && target.version && versionRe.test(target.version)) return `${origin}${target.name}@${target.version}/${target.path}`;
   const meta = await resolveMeta(target);
   return `${origin}${meta.name}@${meta.version}/${target.path || string(meta.unpkg) || string(meta.browser) || string(meta.main) || "index.js"}`;
 }
