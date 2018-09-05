@@ -5,7 +5,7 @@ const some = queue.some;
 const hasOwnProperty = queue.hasOwnProperty;
 const origin = "https://unpkg.com/";
 const identifierRe = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
-const versionRe = /^\d+\.\d+\.\d+(-[\w-.+]+)?$/g;
+const versionRe = /^\d+\.\d+\.\d+(-[\w-.+]+)?$/;
 
 function string(value) {
   return typeof value === "string" ? value : "";
