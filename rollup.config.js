@@ -29,6 +29,9 @@ export default [
       terser({
         output: {
           preamble: config.output.banner
+        },
+        mangle: {
+          reserved: ["RequireError"]
         }
       })
     ]

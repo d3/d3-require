@@ -13,7 +13,7 @@ export class RequireError extends Error {
   }
 }
 
-RequireError.prototype.name = "RequireError";
+RequireError.prototype.name = RequireError.name;
 
 function string(value) {
   return typeof value === "string" ? value : "";
