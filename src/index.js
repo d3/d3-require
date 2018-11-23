@@ -7,6 +7,14 @@ const origin = "https://unpkg.com/";
 const identifierRe = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
 const versionRe = /^\d+\.\d+\.\d+(-[\w-.+]+)?$/;
 
+export class RequireError extends Error {
+  constructor(message) {
+    super(message);
+  }
+}
+
+RequireError.prototype.name = "RequireError";
+
 function string(value) {
   return typeof value === "string" ? value : "";
 }
@@ -24,7 +32,7 @@ function resolveMeta(target) {
   const url = `${origin}${target.name}${target.version ? `@${target.version}` : ""}/package.json`;
   let meta = metas.get(url);
   if (!meta) metas.set(url, meta = fetch(url).then(response => {
-    if (!response.ok) throw new Error("unable to load package.json");
+    if (!response.ok) throw new RequireError("unable to load package.json");
     if (response.redirected && !metas.has(response.url)) metas.set(response.url, meta);
     return response.json();
   }));
@@ -35,7 +43,7 @@ async function resolve(name, base) {
   if (name.startsWith(origin)) name = name.substring(origin.length);
   if (/^(\w+:)|\/\//i.test(name)) return name;
   if (/^[.]{0,2}\//i.test(name)) return new URL(name, base == null ? location : base).href;
-  if (!name.length || /^[\s._]/.test(name) || /\s$/.test(name)) throw new Error("illegal name");
+  if (!name.length || /^[\s._]/.test(name) || /\s$/.test(name)) throw new RequireError("illegal name");
   const target = parseIdentifier(name);
   if (!target) return `${origin}${name}`;
   if (!target.version && base != null && base.startsWith(origin)) {
@@ -60,11 +68,11 @@ export function requireFrom(resolver) {
       const script = document.createElement("script");
       script.onload = () => {
         try { resolve(queue.pop()(requireRelative(url))); }
-        catch (error) { reject(new Error("invalid module")); }
+        catch (error) { reject(new RequireError("invalid module")); }
         script.remove();
       };
       script.onerror = () => {
-        reject(new Error("unable to load module"));
+        reject(new RequireError("unable to load module"));
         script.remove();
       };
       script.async = true;
