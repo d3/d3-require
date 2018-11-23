@@ -92,6 +92,6 @@ myRequire("semiotic").then(Semiotic => {
 });
 ```
 
-<a href='#RequireError' name="RequireError">#</a> d3.<b>RequireError</b>
+<a href="#RequireError" name="RequireError">#</a> d3.<b>RequireError</b>
 
 The class of error that may be thrown by require.
