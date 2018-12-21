@@ -6,6 +6,7 @@ const hasOwnProperty = queue.hasOwnProperty;
 const origin = "https://cdn.jsdelivr.net/npm/";
 const identifierRe = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
 const versionRe = /^\d+\.\d+\.\d+(-[\w-.+]+)?$/;
+const mains = ["unpkg", "jsdelivr", "browser", "main"];
 
 export class RequireError extends Error {
   constructor(message) {
@@ -15,8 +16,13 @@ export class RequireError extends Error {
 
 RequireError.prototype.name = RequireError.name;
 
-function string(value) {
-  return typeof value === "string" ? value : "";
+function main(meta) {
+  for (const key of mains) {
+    const value = meta[key];
+    if (typeof value === "string") {
+      return value;
+    }
+  }
 }
 
 function parseIdentifier(identifier) {
@@ -53,7 +59,7 @@ async function resolve(name, base) {
   if (target.path && !/\.[^/]*$/.test(target.path)) target.path += ".js";
   if (target.path && target.version && versionRe.test(target.version)) return `${origin}${target.name}@${target.version}/${target.path}`;
   const meta = await resolveMeta(target);
-  return `${origin}${meta.name}@${meta.version}/${target.path || string(meta.unpkg) || string(meta.browser) || string(meta.main) || "index.js"}`;
+  return `${origin}${meta.name}@${meta.version}/${target.path || main(meta) || "index.js"}`;
 }
 
 export const require = requireFrom(resolve);
