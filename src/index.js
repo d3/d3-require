@@ -3,7 +3,7 @@ const queue = [];
 const map = queue.map;
 const some = queue.some;
 const hasOwnProperty = queue.hasOwnProperty;
-const origin = "https://unpkg.com/";
+const origin = "https://cdn.jsdelivr.net/npm/";
 const identifierRe = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
 const versionRe = /^\d+\.\d+\.\d+(-[\w-.+]+)?$/;
 
@@ -50,6 +50,7 @@ async function resolve(name, base) {
     const meta = await resolveMeta(parseIdentifier(base.substring(origin.length)));
     target.version = meta.dependencies && meta.dependencies[target.name] || meta.peerDependencies && meta.peerDependencies[target.name];
   }
+  if (target.path && !/\.[^/]*$/.test(target.path)) target.path += ".js";
   if (target.path && target.version && versionRe.test(target.version)) return `${origin}${target.name}@${target.version}/${target.path}`;
   const meta = await resolveMeta(target);
   return `${origin}${meta.name}@${meta.version}/${target.path || string(meta.unpkg) || string(meta.browser) || string(meta.main) || "index.js"}`;
