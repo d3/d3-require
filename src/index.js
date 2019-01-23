@@ -6,6 +6,7 @@ const hasOwnProperty = queue.hasOwnProperty;
 const origin = "https://cdn.jsdelivr.net/npm/";
 const identifierRe = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
 const versionRe = /^\d+\.\d+\.\d+(-[\w-.+]+)?$/;
+const extensionRe = /\.[^/]*$/;
 const mains = ["unpkg", "jsdelivr", "browser", "main"];
 
 export class RequireError extends Error {
@@ -20,7 +21,7 @@ function main(meta) {
   for (const key of mains) {
     const value = meta[key];
     if (typeof value === "string") {
-      return value;
+      return extensionRe.test(value) ? value : `${value}.js`;
     }
   }
 }
@@ -56,7 +57,7 @@ async function resolve(name, base) {
     const meta = await resolveMeta(parseIdentifier(base.substring(origin.length)));
     target.version = meta.dependencies && meta.dependencies[target.name] || meta.peerDependencies && meta.peerDependencies[target.name];
   }
-  if (target.path && !/\.[^/]*$/.test(target.path)) target.path += ".js";
+  if (target.path && !extensionRe.test(target.path)) target.path += ".js";
   if (target.path && target.version && versionRe.test(target.version)) return `${origin}${target.name}@${target.version}/${target.path}`;
   const meta = await resolveMeta(target);
   return `${origin}${meta.name}@${meta.version}/${target.path || main(meta) || "index.js"}`;
