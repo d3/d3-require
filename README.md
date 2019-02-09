@@ -12,10 +12,10 @@ By default, [d3.require](#require) loads modules from [jsDelivr](https://jsdeliv
 
 ## Installing
 
-If you use NPM, `npm install d3-require`. Otherwise, download the [latest release](https://github.com/d3/d3-require/releases/latest). You can also load directly from [unpkg.com](https://unpkg.com/d3-require/). AMD, CommonJS, and vanilla environments are supported. In vanilla, `d3` and `define` globals are exported:
+If you use NPM, `npm install d3-require`. Otherwise, download the [latest release](https://github.com/d3/d3-require/releases/latest). You can also load directly from [jsDelivr](https://www.jsdelivr.com/package/npm/d3-require). AMD, CommonJS, and vanilla environments are supported. In vanilla, `d3` and `define` globals are exported:
 
 ```html
-<script src="https://unpkg.com/d3-require@1"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-require@1"></script>
 <script>
 
 d3.require("d3-array").then(d3 => {
