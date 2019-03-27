@@ -94,7 +94,7 @@ myRequire("semiotic").then(Semiotic => {
 
 <a href="#require_version" name="require_version">#</a> <i>require</i>.<b>version</b>(<i>versions</i>) [<>](https://github.com/d3/d3-require/blob/master/src/index.js "Source")
 
-Returns a [require function](#require) with the specified *versions*. For each key in the specified *versions* object, any require of that key has the corresponding version range appended with an at-sign (`@`). This is useful to pin versions of indirect dependencies, particularly when direct dependencies have lenient version ranges such as `*`. For example:
+Returns a [require function](#require) with the specified *versions*. For each key in the specified *versions* object, any require of that key has the corresponding version range appended (*e.g.*, `vega` becomes `vega@5.3.2`). This is useful to pin versions of indirect dependencies, particularly when direct dependencies have lenient version ranges such as `*`. For example:
 
 ```js
 const myRequire = d3.require.version({
