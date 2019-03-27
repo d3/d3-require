@@ -92,6 +92,22 @@ myRequire("semiotic").then(Semiotic => {
 });
 ```
 
+<a href="#require_version" name="require_version">#</a> <i>require</i>.<b>version</b>(<i>versions</i>) [<>](https://github.com/d3/d3-require/blob/master/src/index.js "Source")
+
+Returns a [require function](#require) with the specified *versions*. For each key in the specified *versions* object, any require of that key has the corresponding version range appended with an at-sign (`@`). This is useful to pin versions of indirect dependencies, particularly when direct dependencies have lenient version ranges such as `*`. For example:
+
+```js
+const myRequire = d3.require.alias({
+  "vega": "5.3.2",
+  "vega-lite": "3.0.0",
+  "vega-embed": "4.0.0"
+});
+
+myRequire("vega-embed").then(embed => {
+  console.log(embed);
+});
+```
+
 <a href="#RequireError" name="RequireError">#</a> d3.<b>RequireError</b>
 
 The class of error that may be thrown by require.

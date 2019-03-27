@@ -98,9 +98,17 @@ export function requireFrom(resolver) {
   function requireAlias(aliases) {
     return requireFrom((name, base) => {
       if (name in aliases) {
-        name = aliases[name], base = null;
-        if (typeof name !== "string") return name;
+        const value = aliases[name];
+        if (typeof value !== "string") return value;
+        return resolver(value, null);
       }
+      return resolver(name, base);
+    });
+  }
+
+  function requireVersion(versions) {
+    return requireFrom((name, base) => {
+      if (name in versions) return resolver(`${name}@${versions[name]}`, null);
       return resolver(name, base);
     });
   }
@@ -112,6 +120,7 @@ export function requireFrom(resolver) {
   }
 
   require.alias = requireAlias;
+  require.version = requireVersion;
   require.resolve = resolver;
 
   return require;
