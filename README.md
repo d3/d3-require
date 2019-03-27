@@ -97,7 +97,7 @@ myRequire("semiotic").then(Semiotic => {
 Returns a [require function](#require) with the specified *versions*. For each key in the specified *versions* object, any require of that key has the corresponding version range appended with an at-sign (`@`). This is useful to pin versions of indirect dependencies, particularly when direct dependencies have lenient version ranges such as `*`. For example:
 
 ```js
-const myRequire = d3.require.alias({
+const myRequire = d3.require.version({
   "vega": "5.3.2",
   "vega-lite": "3.0.0",
   "vega-embed": "4.0.0"
