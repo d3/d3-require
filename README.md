@@ -1,6 +1,6 @@
 # d3-require
 
-A minimal, promise-based implementation to require [asynchronous module definitions](https://github.com/amdjs/amdjs-api/blob/master/AMD.md) (AMD). This implementation is [small](https://github.com/d3/d3-require/blob/master/index.js) and supports a strict subset of AMD. It is designed to work with browser-targeting libraries that implement one of the [recommended UMD patterns](https://github.com/umdjs/umd). The constraints of this implementation are:
+A minimal, promise-based implementation to require [asynchronous module definitions](https://github.com/amdjs/amdjs-api/blob/master/AMD.md) (AMD). This implementation is [small](https://github.com/d3/d3-require/blob/master/src/index.js) and supports a strict subset of AMD. It is designed to work with browser-targeting libraries that implement one of the [recommended UMD patterns](https://github.com/umdjs/umd). The constraints of this implementation are:
 
 * The `define` method must be called synchronously by the library on load.
 
@@ -27,7 +27,7 @@ d3.require("d3-array").then(d3 => {
 
 ## API Reference
 
-<a href="#require" name="require">#</a> d3.<b>require</b>(<i>names…</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js "Source")
+<a href="#require" name="require">#</a> d3.<b>require</b>(<i>names…</i>) [<>](https://github.com/d3/d3-require/blob/master/src/index.js "Source")
 
 To load a module:
 
@@ -57,7 +57,7 @@ Note: if more than one *name* is specified, the promise will yield a new object 
 
 If a module’s property value is null or undefined on load, such as [d3.event](https://github.com/d3/d3-selection/blob/master/README.md#event), the value will be exposed via [getter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get) rather than copied; this is to simulate ES module-style [live bindings](http://2ality.com/2015/07/es6-module-exports.html). However, property values that are neither null nor undefined on load are copied by value assignment, and thus **are not live bindings**!
 
-<a href="#requireFrom" name="requireFrom">#</a> d3.<b>requireFrom</b>(<i>resolver</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js "Source")
+<a href="#requireFrom" name="requireFrom">#</a> d3.<b>requireFrom</b>(<i>resolver</i>) [<>](https://github.com/d3/d3-require/blob/master/src/index.js "Source")
 
 Returns a new [require function](#require) which loads modules from the specified *resolver*, which is a function that takes a module name and returns the corresponding URL. For example:
 
@@ -73,11 +73,11 @@ myRequire("d3-array").then(d3 => {
 
 The returned *require* function exposes the passed in *resolver* as [*require*.resolve](#require_resolve).
 
-<a href="#require_resolve" name="require_resolve">#</a> <i>require</i>.<b>resolve</b>(<i>name</i>[, <i>base</i>]) [<>](https://github.com/d3/d3-require/blob/master/index.js "Source")
+<a href="#require_resolve" name="require_resolve">#</a> <i>require</i>.<b>resolve</b>(<i>name</i>[, <i>base</i>]) [<>](https://github.com/d3/d3-require/blob/master/src/index.js "Source")
 
 Returns a promise to the URL to load the module with the specified *name*. The *name* may also be specified as a relative path, in which case it is resolved relative to the specified *base* URL. If *base* is not specified, it defaults to the global [location](https://developer.mozilla.org/en-US/docs/Web/API/Window/location).
 
-<a href="#require_alias" name="require_alias">#</a> <i>require</i>.<b>alias</b>(<i>aliases</i>) [<>](https://github.com/d3/d3-require/blob/master/index.js "Source")
+<a href="#require_alias" name="require_alias">#</a> <i>require</i>.<b>alias</b>(<i>aliases</i>) [<>](https://github.com/d3/d3-require/blob/master/src/index.js "Source")
 
 Returns a [require function](#require) with the specified *aliases*. For each key in the specified *aliases* object, any require of that key is substituted with the corresponding value. The values can be strings representing the name or URL of the module to load, or a literal non-string value for direct substitution. For example, if `React` and `ReactDOM` are already in-scope, you can say:
 
