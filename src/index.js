@@ -7,7 +7,7 @@ const origin = "https://cdn.jsdelivr.net/npm/";
 const identifierRe = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
 const versionRe = /^\d+\.\d+\.\d+(-[\w-.+]+)?$/;
 const extensionRe = /\.[^/]*$/;
-const mains = ["unpkg", "jsdelivr", "browser", "main"];
+const mains = ["unpkg", "jsdelivr", "browser", "umd:main", "main"];
 
 export class RequireError extends Error {
   constructor(message) {
