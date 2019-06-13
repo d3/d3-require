@@ -135,7 +135,7 @@ function getter(object, name) {
 }
 
 function isbuiltin(name) {
-  name = "" + name;
+  name = name + "";
   return name === "exports" || name === "module";
 }
 
@@ -145,10 +145,10 @@ function define(name, dependencies, factory) {
   else if (n < 3) factory = dependencies, dependencies = typeof name === "string" ? [] : name;
   queue.push(some.call(dependencies, isbuiltin) ? require => {
     const exports = {};
-    const module = { exports: exports };
+    const module = {exports};
     return Promise.all(map.call(dependencies, name => {
       name = name + "";
-      return  name === "exports" ? exports : name === "module" ? module : require(name);
+      return name === "exports" ? exports : name === "module" ? module : require(name);
     })).then(dependencies => {
       factory.apply(null, dependencies);
       return module.exports;
