@@ -4,7 +4,7 @@ A minimal, promise-based implementation to require [asynchronous module definiti
 
 * The `define` method must be called synchronously by the library on load.
 
-* Only the built-in `exports` dependency is allowed; no `require` or `module` as in CommonJS.
+* Only the built-in `exports` and `module` dependencies are allowed; no `require` as in CommonJS. The `module` entry only contains an `exports` property.
 
 * Named module definitions (*e.g.*, jQuery) are treated as anonymous modules.
 
