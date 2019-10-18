@@ -63,7 +63,7 @@ async function resolve(name, base) {
   return `${origin}${meta.name}@${meta.version}/${target.path || main(meta) || "index.js"}`;
 }
 
-export const require = requireFrom(resolve);
+export var require = requireFrom(resolve);
 
 export function requireFrom(resolver) {
   const cache = new Map;
