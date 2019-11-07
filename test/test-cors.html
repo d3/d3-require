@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<script src="/dist/d3-require.min.js"></script>
+NOTE: This test only works when opened from an actual domain name. On localhost,
+      CORS checks are disabled, and from a file: url, CORS can’t be enabled.
+<script>
+  const r = d3.require.alias({
+    react: "https://unpkg.com/react@16.11.0/umd/react.development.js",
+    "react-dom": "https://unpkg.com/react-dom@16.11.0/umd/react-dom.development.js"
+  });
+
+  Promise.all([r.cors("react"), r.cors("react-dom")]).then(([React, ReactDOM]) => {
+    class ErrorBoundary extends React.Component {
+      constructor(...args) {
+        super(...args)
+        this.state = { stop: false }
+      }
+      static getDerivedStateFromError(error) {
+        console.log(error.message)
+        return { stop: true }
+      }
+      render() {
+        return this.state.stop || React.createElement(Component);
+      }
+    }
+
+    const Component = () => { throw new Error("hi!") }
+
+    ReactDOM.render(React.createElement(ErrorBoundary), document.getElementById('div'))
+  });
+</script>
+
+<div id="div"></div>

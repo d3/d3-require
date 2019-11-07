@@ -69,7 +69,7 @@ export function requireFrom(resolver) {
   const cache = new Map;
   const requireBase = requireRelative(null);
 
-  function requireAbsolute(url) {
+  function requireAbsolute(url, cors) {
     if (typeof url !== "string") return url;
     let module = cache.get(url);
     if (!module) cache.set(url, module = new Promise((resolve, reject) => {
@@ -77,13 +77,16 @@ export function requireFrom(resolver) {
       script.onload = () => {
         try { resolve(queue.pop()(requireRelative(url))); }
         catch (error) { reject(new RequireError("invalid module")); }
-        script.remove();
+        // script.remove();
       };
       script.onerror = () => {
         reject(new RequireError("unable to load module"));
         script.remove();
       };
       script.async = true;
+      if (cors) {
+        script.setAttribute("crossorigin", "anonymous");
+      }
       script.src = url;
       window.define = define;
       document.head.appendChild(script);
@@ -92,7 +95,9 @@ export function requireFrom(resolver) {
   }
 
   function requireRelative(base) {
-    return name => Promise.resolve(resolver(name, base)).then(requireAbsolute);
+    return (name, cors = false) =>
+      Promise.resolve(resolver(name, base))
+        .then(url => requireAbsolute(url, cors));
   }
 
   function requireAlias(aliases) {
@@ -107,12 +112,19 @@ export function requireFrom(resolver) {
 
   function require(name) {
     return arguments.length > 1
-        ? Promise.all(map.call(arguments, requireBase)).then(merge)
-        : requireBase(name);
+        ? Promise.all(map.call(arguments, name => requireBase(name, false))).then(merge)
+        : requireBase(name, false);
+  }
+
+  function requireCors(name) {
+    return arguments.length > 1
+        ? Promise.all(map.call(arguments, name => requireBase(name, true))).then(merge)
+        : requireBase(name, true);
   }
 
   require.alias = requireAlias;
   require.resolve = resolver;
+  require.cors = requireCors;
 
   return require;
 }
