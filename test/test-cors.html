@@ -4,11 +4,11 @@ NOTE: This test only works when opened from an actual domain name. On localhost,
       CORS checks are disabled, and from a file: url, CORS can’t be enabled.
 <script>
   const r = d3.require.alias({
-    react: "https://unpkg.com/react@16/umd/react.development.js",
-    "react-dom": "https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+    react: "https://unpkg.com/react@16.11.0/umd/react.development.js",
+    "react-dom": "https://unpkg.com/react-dom@16.11.0/umd/react-dom.development.js"
   });
 
-  Promise.all([r("react"), r("react-dom")]).then(([React, ReactDOM]) => {
+  Promise.all([r.cors("react"), r.cors("react-dom")]).then(([React, ReactDOM]) => {
     class ErrorBoundary extends React.Component {
       constructor(...args) {
         super(...args)
