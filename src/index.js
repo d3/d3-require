@@ -84,6 +84,7 @@ export function requireFrom(resolver) {
         script.remove();
       };
       script.async = true;
+      script.crossOrigin = "anonymous";
       script.src = url;
       window.define = define;
       document.head.appendChild(script);
