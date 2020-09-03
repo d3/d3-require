@@ -65,8 +65,8 @@ async function resolve(name, base) {
 
 export var require = requireFrom(resolve);
 
-export function requireFrom(resolver) {
-  const cache = new Map;
+export function requireFrom(resolver, cache) {
+  cache = cache || new Map;
   const requireBase = requireRelative(null);
 
   function requireAbsolute(url) {
@@ -102,7 +102,7 @@ export function requireFrom(resolver) {
         if (typeof name !== "string") return name;
       }
       return resolver(name, base);
-    });
+    }, cache);
   }
 
   function require(name) {
