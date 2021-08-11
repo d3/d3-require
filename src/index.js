@@ -73,15 +73,23 @@ export function requireFrom(resolver) {
     if (typeof url !== "string") return url;
     let module = cache.get(url);
     if (!module) cache.set(url, module = new Promise((resolve, reject) => {
+      const needsSave = define !== window.define;
+      const prevDefine = window.define;
       const script = document.createElement("script");
       script.onload = () => {
         try { resolve(queue.pop()(requireRelative(url))); }
         catch (error) { reject(new RequireError("invalid module")); }
         script.remove();
+        if (needsSave) {
+          window.define = prevDefine;
+        }
       };
       script.onerror = () => {
         reject(new RequireError("unable to load module"));
         script.remove();
+        if (needsSave) {
+          window.define = prevDefine;
+        }
       };
       script.async = true;
       script.src = url;
