@@ -68,32 +68,39 @@ export var require = requireFrom(resolve);
 export function requireFrom(resolver) {
   const cache = new Map;
   const requireBase = requireRelative(null);
-
+  let requestsInFlight = 0;
+  let prevDefine = undefined;
+    
   function requireAbsolute(url) {
     if (typeof url !== "string") return url;
     let module = cache.get(url);
     if (!module) cache.set(url, module = new Promise((resolve, reject) => {
-      const needsSave = define !== window.define;
-      const prevDefine = window.define;
+
       const script = document.createElement("script");
       script.onload = () => {
         try { resolve(queue.pop()(requireRelative(url))); }
         catch (error) { reject(new RequireError("invalid module")); }
         script.remove();
-        if (needsSave) {
+        requestsInFlight--;
+        if (requestsInFlight === 0) {
           window.define = prevDefine;
         }
       };
       script.onerror = () => {
         reject(new RequireError("unable to load module"));
         script.remove();
-        if (needsSave) {
+        requestsInFlight--;
+        if (requestsInFlight === 0) {
           window.define = prevDefine;
         }
       };
       script.async = true;
       script.src = url;
-      window.define = define;
+      if (requestsInFlight === 0) {
+        prevDefine = window.define;
+        window.define = internalDefine;
+      };
+      requestsInFlight++;
       document.head.appendChild(script);
     }));
     return module;
@@ -147,7 +154,7 @@ function isbuiltin(name) {
   return name === "exports" || name === "module";
 }
 
-function define(name, dependencies, factory) {
+function internalDefine(name, dependencies, factory) {
   const n = arguments.length;
   if (n < 2) factory = name, dependencies = [];
   else if (n < 3) factory = dependencies, dependencies = typeof name === "string" ? [] : name;
@@ -168,4 +175,4 @@ function define(name, dependencies, factory) {
   });
 }
 
-define.amd = {};
+internalDefine.amd = {};
