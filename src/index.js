@@ -98,7 +98,7 @@ export function requireFrom(resolver) {
       script.src = url;
       if (requestsInFlight === 0) {
         prevDefine = window.define;
-        window.define = internalDefine;
+        window.define = define;
       };
       requestsInFlight++;
       document.head.appendChild(script);
@@ -154,7 +154,7 @@ function isbuiltin(name) {
   return name === "exports" || name === "module";
 }
 
-function internalDefine(name, dependencies, factory) {
+function define(name, dependencies, factory) {
   const n = arguments.length;
   if (n < 2) factory = name, dependencies = [];
   else if (n < 3) factory = dependencies, dependencies = typeof name === "string" ? [] : name;
@@ -175,4 +175,4 @@ function internalDefine(name, dependencies, factory) {
   });
 }
 
-internalDefine.amd = {};
+define.amd = {};
