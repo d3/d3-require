@@ -68,39 +68,28 @@ export var require = requireFrom(resolve);
 export function requireFrom(resolver) {
   const cache = new Map;
   const requireBase = requireRelative(null);
-  let requestsInFlight = 0;
-  let prevDefine = undefined;
-    
+  let active = 0;
+  let _define = undefined;
+
   function requireAbsolute(url) {
     if (typeof url !== "string") return url;
     let module = cache.get(url);
     if (!module) cache.set(url, module = new Promise((resolve, reject) => {
-
       const script = document.createElement("script");
       script.onload = () => {
         try { resolve(queue.pop()(requireRelative(url))); }
         catch (error) { reject(new RequireError("invalid module")); }
         script.remove();
-        requestsInFlight--;
-        if (requestsInFlight === 0) {
-          window.define = prevDefine;
-        }
+        if (--active === 0) window.define = _define;
       };
       script.onerror = () => {
         reject(new RequireError("unable to load module"));
         script.remove();
-        requestsInFlight--;
-        if (requestsInFlight === 0) {
-          window.define = prevDefine;
-        }
+        if (--active === 0) window.define = _define;
       };
       script.async = true;
       script.src = url;
-      if (requestsInFlight === 0) {
-        prevDefine = window.define;
-        window.define = define;
-      };
-      requestsInFlight++;
+      if (++active === 1) _define = window.define, window.define = define;
       document.head.appendChild(script);
     }));
     return module;
