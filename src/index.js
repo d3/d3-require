@@ -5,7 +5,7 @@ const some = queue.some;
 const hasOwnProperty = queue.hasOwnProperty;
 const identifierRe = /^((?:@[^/@]+\/)?[^/@]+)(?:@([^/]+))?(?:\/(.*))?$/;
 const versionRe = /^\d+\.\d+\.\d+(-[\w-.+]+)?$/;
-const extensionRe = /\.[^/]*$/;
+const extensionRe = /(?:\.[^/]*|\/)$/;
 
 export class RequireError extends Error {
   constructor(message) {
