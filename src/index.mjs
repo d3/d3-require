@@ -25,6 +25,7 @@ function parseIdentifier(identifier) {
 }
 
 export function resolveFrom(origin = "https://cdn.jsdelivr.net/npm/", mains = ["unpkg", "jsdelivr", "browser", "main"]) {
+  if (!/\/$/.test(origin)) throw new Error("origin lacks trailing slash");
 
   function main(meta) {
     for (const key of mains) {
