@@ -2,7 +2,7 @@ import {terser} from "rollup-plugin-terser";
 import * as meta from "./package.json";
 
 const config = {
-  input: "src/index.js",
+  input: "src/index.mjs",
   external: Object.keys(meta.dependencies || {}).filter(key => /^d3-/.test(key)),
   output: {
     file: `dist/${meta.name}.js`,
