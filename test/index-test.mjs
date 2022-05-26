@@ -23,7 +23,8 @@ it("resolveFrom(origin) requires the origin to have a trailing slash", async () 
 
 it("resolveFrom(…) adds the file extension only if necessary", async () => {
   const resolve = resolveFrom();
-  assert.strictEqual(await resolve("d3@7.4.4/dist/d3.js"), "https://cdn.jsdelivr.net/npm/d3@7.4.4/dist/d3.js"); // yes
+  assert.strictEqual(await resolve("d3@7.4.4/dist/d3"), "https://cdn.jsdelivr.net/npm/d3@7.4.4/dist/d3.js"); // yes
+  assert.strictEqual(await resolve("d3@7.4.4/dist/d3.js"), "https://cdn.jsdelivr.net/npm/d3@7.4.4/dist/d3.js"); // no
   assert.strictEqual(await resolve("d3@7.4.4/dist/d3.min"), "https://cdn.jsdelivr.net/npm/d3@7.4.4/dist/d3.min"); // no
   assert.strictEqual(await resolve("d3@7.4.4/dist/d3/"), "https://cdn.jsdelivr.net/npm/d3@7.4.4/dist/d3/"); // no
 });
