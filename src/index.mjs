@@ -29,8 +29,9 @@ export function resolveFrom(origin = "https://cdn.jsdelivr.net/npm/", mains = ["
 
   function main(meta) {
     for (const key of mains) {
-      const value = meta[key];
+      let value = meta[key];
       if (typeof value === "string") {
+        if (value.startsWith("./")) value = value.slice(2);
         return extensionRe.test(value) ? value : `${value}.js`;
       }
     }
