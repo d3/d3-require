@@ -71,7 +71,7 @@ myRequire("d3-array").then(d3 => {
 });
 ```
 
-The returned *require* function exposes the passed in *resolver* as [*require*.resolve](#require_resolve).
+The returned *require* function exposes the passed in *resolver* as [*require*.resolve](#require_resolve). See also [resolveFrom](#resolveFrom).
 
 <a href="#require_resolve" name="require_resolve">#</a> <i>require</i>.<b>resolve</b>(<i>name</i>[, <i>base</i>]) [<>](https://github.com/d3/d3-require/blob/master/src/index.js "Source")
 
@@ -90,6 +90,15 @@ const myRequire = d3.require.alias({
 myRequire("semiotic").then(Semiotic => {
   console.log(Semiotic);
 });
+```
+
+<a href="#resolveFrom" name="resolveFrom">#</a> d3.<b>resolveFrom</b>(<i>origin</i>, <i>mains</i>) [<>](https://github.com/d3/d3-require/blob/master/src/index.js "Source")
+
+Returns a new [resolver function](#require_resolve) which loads modules from the specified *origin* and observes the specified *mains* entry points.  The returned function can be passed to [requireFrom](#requireFrom). For example:
+
+```js
+const myResolve = d3.resolveFrom(`https://unpkg.com/${name}`);
+const myRequire = d3.requireFrom(myResolve);
 ```
 
 <a href="#RequireError" name="RequireError">#</a> d3.<b>RequireError</b>
